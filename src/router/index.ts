@@ -154,7 +154,7 @@ const router = createRouter({
 })
 
 // Navigation guards
-router.beforeEach(async (to, _from, next) => {
+router.beforeEach(async (to) => {
   const authStore = useAuthStore()
 
   // Restore session on first load
@@ -171,34 +171,34 @@ router.beforeEach(async (to, _from, next) => {
 
   // Public routes are always accessible
   if (isPublic) {
-    return next()
+    return true
   }
 
   // Redirect authenticated users away from guest-only pages
   if (isGuestOnly && isAuthenticated) {
     // Redirect super admin to admin dashboard
     if (isSuperAdmin) {
-      return next({ name: 'admin-dashboard' })
+      return { name: 'admin-dashboard' }
     }
-    return next({ name: 'dashboard' })
+    return { name: 'dashboard' }
   }
 
   // Redirect unauthenticated users to login
   if (requiresAuth && !isAuthenticated) {
-    return next({ name: 'login', query: { redirect: to.fullPath } })
+    return { name: 'login', query: { redirect: to.fullPath } }
   }
 
   // Block non-super-admin from admin routes
   if (requiresSuperAdmin && !isSuperAdmin) {
-    return next({ name: 'dashboard' })
+    return { name: 'dashboard' }
   }
 
   // Redirect super admin from client dashboard to admin dashboard
   if (to.name === 'dashboard' && isSuperAdmin) {
-    return next({ name: 'admin-dashboard' })
+    return { name: 'admin-dashboard' }
   }
 
-  next()
+  return true
 })
 
 export default router
