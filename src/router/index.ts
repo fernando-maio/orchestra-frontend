@@ -77,6 +77,7 @@ const router = createRouter({
           path: 'events/create',
           name: 'events-create',
           component: () => import('@/views/events/EventFormView.vue'),
+          meta: { permission: 'events.create' },
         },
         {
           path: 'events/:id',
@@ -87,6 +88,7 @@ const router = createRouter({
           path: 'events/:id/edit',
           name: 'events-edit',
           component: () => import('@/views/events/EventFormView.vue'),
+          meta: { permission: 'events.update' },
         },
 
         // Vendors
@@ -99,6 +101,7 @@ const router = createRouter({
           path: 'vendors/create',
           name: 'vendors-create',
           component: () => import('@/views/vendors/VendorFormView.vue'),
+          meta: { permission: 'vendors.create' },
         },
         {
           path: 'vendors/:id',
@@ -109,6 +112,7 @@ const router = createRouter({
           path: 'vendors/:id/edit',
           name: 'vendors-edit',
           component: () => import('@/views/vendors/VendorFormView.vue'),
+          meta: { permission: 'vendors.update' },
         },
 
         // Quote Requests
@@ -190,6 +194,14 @@ router.beforeEach(async (to) => {
 
   // Block non-super-admin from admin routes
   if (requiresSuperAdmin && !isSuperAdmin) {
+    return { name: 'dashboard' }
+  }
+
+  // Bloqueia rotas que exigem uma permissao especifica. O backend ja recusa
+  // com 403, mas sem isso o usuario chega ate o formulario e so descobre que
+  // nao pode ao tentar salvar.
+  const requiredPermission = to.meta.permission as string | undefined
+  if (requiredPermission && !authStore.hasPermission(requiredPermission)) {
     return { name: 'dashboard' }
   }
 

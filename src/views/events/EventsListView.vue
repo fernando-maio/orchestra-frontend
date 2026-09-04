@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import dashboardService, { type TopOrganization } from '@/services/dashboard'
 import { useToast } from 'vue-toastification'
 import eventsService, { type EventFilters, type PaginatedEvents } from '@/services/events'
 import type { Event } from '@/types'
 
 const router = useRouter()
+const auth = useAuthStore()
 const toast = useToast()
 
 // State
@@ -20,7 +23,22 @@ const perPage = ref(15)
 const filters = ref<EventFilters>({
   search: '',
   status: '',
+  organization_id: '',
 })
+
+// Só o super-admin enxerga eventos de várias organizações (o global scope
+// BelongsToOrganization prende os demais à própria). Para todo mundo o filtro
+// seria uma caixa com uma opção só.
+const organizations = ref<TopOrganization[]>([])
+
+const loadOrganizations = async () => {
+  if (!auth.isSuperAdmin) return
+  try {
+    organizations.value = await dashboardService.getTopOrganizations(100)
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 const searchQuery = ref('')
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
@@ -175,6 +193,11 @@ const getDaysUntil = (startDate: string) => {
 // Lifecycle
 onMounted(() => {
   loadEvents()
+  loadOrganizations()
+})
+
+watch(() => filters.value.organization_id, () => {
+  applyFilters()
 })
 
 watch(() => filters.value.status, () => {
@@ -191,6 +214,7 @@ watch(() => filters.value.status, () => {
         <p class="text-gray-500">Gerencie seus eventos</p>
       </div>
       <button
+        v-if="auth.hasPermission('events.create')"
         @click="createEvent"
         class="btn btn-primary flex items-center gap-2"
       >
@@ -215,6 +239,17 @@ watch(() => filters.value.status, () => {
               placeholder="Nome do evento, local..."
               class="input w-full"
             />
+          </div>
+
+          <!-- Organização (apenas super-admin) -->
+          <div v-if="auth.isSuperAdmin">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Organização</label>
+            <select v-model="filters.organization_id" class="input w-full">
+              <option value="">Todas</option>
+              <option v-for="org in organizations" :key="org.id" :value="org.id">
+                {{ org.name }}
+              </option>
+            </select>
           </div>
 
           <!-- Status -->
@@ -310,6 +345,7 @@ watch(() => filters.value.status, () => {
             <!-- Actions -->
             <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-end gap-2" @click.stop>
               <button
+                v-if="auth.hasPermission('events.update')"
                 @click="editEvent(event)"
                 class="text-gray-400 hover:text-primary-600 p-1"
                 title="Editar"
@@ -319,6 +355,7 @@ watch(() => filters.value.status, () => {
                 </svg>
               </button>
               <button
+                v-if="auth.hasPermission('events.create')"
                 @click="duplicateEvent(event)"
                 class="text-gray-400 hover:text-blue-600 p-1"
                 title="Duplicar"
@@ -358,6 +395,7 @@ watch(() => filters.value.status, () => {
                 </div>
               </div>
               <button
+                v-if="auth.hasPermission('events.delete')"
                 @click="deleteEvent(event)"
                 class="text-gray-400 hover:text-red-600 p-1"
                 title="Excluir"
@@ -381,7 +419,7 @@ watch(() => filters.value.status, () => {
           {{ hasFilters ? 'Nenhum evento encontrado com os filtros aplicados.' : 'Comece criando seu primeiro evento.' }}
         </p>
         <div class="mt-6">
-          <button @click="createEvent" class="btn btn-primary">
+          <button v-if="auth.hasPermission('events.create')" @click="createEvent" class="btn btn-primary">
             <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>

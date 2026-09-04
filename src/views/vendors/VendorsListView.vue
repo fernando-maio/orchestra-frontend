@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import { useToast } from 'vue-toastification'
 import vendorsService, { type VendorFilters, type PaginatedVendors } from '@/services/vendors'
 import type { Vendor, Category } from '@/types'
 
 const router = useRouter()
+const auth = useAuthStore()
 const toast = useToast()
 
 // State
@@ -272,6 +274,7 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
         <p class="text-gray-500">Gerencie os fornecedores do marketplace</p>
       </div>
       <button
+        v-if="auth.hasPermission('vendors.create')"
         @click="createVendor"
         class="btn btn-primary flex items-center gap-2"
       >
@@ -451,6 +454,7 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
             <!-- Subscription -->
             <td class="px-6 py-4 whitespace-nowrap">
               <select
+                v-if="auth.hasPermission('vendors.update')"
                 :value="vendor.subscription_tier"
                 :disabled="tierSaving === vendor.id"
                 :class="getSubscriptionBadge(vendor.subscription_tier).class"
@@ -462,13 +466,20 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
                   {{ t.label }}
                 </option>
               </select>
+              <span
+                v-else
+                :class="getSubscriptionBadge(vendor.subscription_tier).class"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+              >
+                {{ getSubscriptionBadge(vendor.subscription_tier).label }}
+              </span>
             </td>
 
             <!-- Actions -->
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
               <div class="flex items-center justify-end gap-2">
                 <!-- Approve/Reject for pending vendors -->
-                <template v-if="vendor.approval_status === 'pending'">
+                <template v-if="vendor.approval_status === 'pending' && auth.hasPermission('vendors.approve')">
                   <button
                     @click="approveVendor(vendor)"
                     class="text-green-600 hover:text-green-700"
@@ -499,6 +510,7 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
                   </svg>
                 </button>
                 <button
+                  v-if="auth.hasPermission('vendors.update')"
                   @click="editVendor(vendor)"
                   class="text-gray-400 hover:text-primary-600"
                   title="Editar"
@@ -508,6 +520,7 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
                   </svg>
                 </button>
                 <button
+                  v-if="auth.hasPermission('vendors.update')"
                   @click="toggleActive(vendor)"
                   :class="vendor.is_active ? 'text-gray-400 hover:text-yellow-600' : 'text-yellow-600 hover:text-yellow-700'"
                   :title="vendor.is_active ? 'Desativar' : 'Ativar'"
@@ -518,6 +531,7 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
                   </svg>
                 </button>
                 <button
+                  v-if="auth.hasPermission('vendors.delete')"
                   @click="deleteVendor(vendor)"
                   class="text-gray-400 hover:text-red-600"
                   title="Excluir"
