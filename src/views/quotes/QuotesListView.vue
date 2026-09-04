@@ -39,7 +39,7 @@
           </li>
         </ul>
       </div>
-      <p class="mt-6 text-xs text-gray-400">Disponivel na Fase 2 do roadmap</p>
+      <p class="mt-6 text-xs text-gray-400">Disponível na Fase 2 do roadmap</p>
     </div>
   </div>
 </template>

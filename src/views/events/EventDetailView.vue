@@ -202,7 +202,7 @@ onMounted(() => {
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
       <h2 class="mt-4 text-xl font-semibold text-gray-900">Evento nao encontrado</h2>
-      <p class="mt-2 text-gray-500">O evento que voce esta procurando nao existe ou foi removido.</p>
+      <p class="mt-2 text-gray-500">O evento que você esta procurando nao existe ou foi removido.</p>
       <div class="mt-6">
         <router-link :to="{ name: 'events' }" class="btn btn-primary">
           Voltar para Eventos
@@ -315,7 +315,7 @@ onMounted(() => {
               </svg>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-gray-500">Orcamento</p>
+              <p class="text-sm font-medium text-gray-500">Orçamento</p>
               <p class="text-sm font-semibold text-gray-900 mt-0.5">{{ formatCurrency(event.estimated_budget) }}</p>
               <p v-if="event.actual_budget" class="text-xs text-gray-500 mt-0.5">Real: {{ formatCurrency(event.actual_budget) }}</p>
             </div>
@@ -375,7 +375,7 @@ onMounted(() => {
 
           <!-- Budget Progress -->
           <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-            <p class="text-sm font-medium text-gray-500">Orcamento</p>
+            <p class="text-sm font-medium text-gray-500">Orçamento</p>
             <p class="text-2xl font-bold mt-1" :class="budgetProgress > 90 ? 'text-red-600' : budgetProgress > 70 ? 'text-yellow-600' : 'text-green-600'">
               {{ budgetProgress }}%
             </p>
@@ -401,7 +401,7 @@ onMounted(() => {
           <div class="p-6 space-y-6">
             <!-- Description -->
             <div v-if="event.description">
-              <h3 class="text-sm font-medium text-gray-500 mb-1">Descricao</h3>
+              <h3 class="text-sm font-medium text-gray-500 mb-1">Descrição</h3>
               <p class="text-gray-900 whitespace-pre-line">{{ event.description }}</p>
             </div>
 
@@ -419,7 +419,7 @@ onMounted(() => {
 
             <!-- Full Address -->
             <div>
-              <h3 class="text-sm font-medium text-gray-500 mb-1">Endereco Completo</h3>
+              <h3 class="text-sm font-medium text-gray-500 mb-1">Endereço Completo</h3>
               <p class="text-gray-900">{{ fullAddress }}</p>
             </div>
 
@@ -481,7 +481,7 @@ onMounted(() => {
         <div class="lg:col-span-1">
           <div class="bg-white rounded-xl shadow-sm border border-gray-100">
             <div class="px-6 py-4 border-b border-gray-100">
-              <h2 class="text-lg font-semibold text-gray-900">Acoes</h2>
+              <h2 class="text-lg font-semibold text-gray-900">Ações</h2>
             </div>
             <div class="p-6 space-y-4">
               <!-- Current Status -->
@@ -513,7 +513,7 @@ onMounted(() => {
               </div>
 
               <div v-else class="text-sm text-gray-500">
-                <p>Nenhuma transicao de status disponivel para o estado atual.</p>
+                <p>Nenhuma transicao de status disponível para o estado atual.</p>
               </div>
 
               <!-- Divider -->

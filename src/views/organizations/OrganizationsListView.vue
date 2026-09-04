@@ -11,7 +11,7 @@ onMounted(async () => {
   try {
     organizations.value = await dashboardService.getTopOrganizations(50)
   } catch (error) {
-    toast.error('Erro ao carregar organizacoes')
+    toast.error('Erro ao carregar organizações')
     console.error(error)
   } finally {
     loading.value = false
@@ -50,8 +50,17 @@ const getPlanLabel = (plan: string) => {
   <div>
     <!-- Header -->
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Organizacoes</h1>
-      <p class="text-gray-500">Gerencie as organizacoes da plataforma Orchestra</p>
+      <h1 class="text-2xl font-bold text-gray-900">Organizações</h1>
+      <p class="text-gray-500">
+        Organizações ativas na plataforma Orchestra
+      </p>
+      <!--
+        A tela e somente leitura: a API ainda nao tem CRUD de organizations
+        (o unico endpoint e o do dashboard admin). As permissoes
+        organizations.create/update/delete ja existem no seeder, mas nada as
+        implementa. O CRUD esta no roadmap - ate la o texto nao promete
+        "gerenciar" o que a tela nao faz.
+      -->
     </div>
 
     <!-- Loading -->
@@ -65,19 +74,19 @@ const getPlanLabel = (plan: string) => {
         <thead class="bg-gray-50">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Organizacao
+              Organização
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Plano
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Localizacao
+              Localização
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Eventos
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Usuarios
+              Usuários
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               GMV
@@ -118,8 +127,8 @@ const getPlanLabel = (plan: string) => {
         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">Nenhuma organizacao</h3>
-        <p class="mt-1 text-sm text-gray-500">Nenhuma organizacao cadastrada ainda.</p>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">Nenhuma organização</h3>
+        <p class="mt-1 text-sm text-gray-500">Nenhuma organização cadastrada ainda.</p>
       </div>
     </div>
   </div>

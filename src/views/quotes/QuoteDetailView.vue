@@ -18,9 +18,9 @@
       <h2 class="text-xl font-semibold text-gray-900 mb-2">Detalhes da Cotacao</h2>
       <p class="text-gray-500 max-w-md mx-auto">
         A visualizacao detalhada de cotacoes, com propostas recebidas e comparativos,
-        estara disponivel na Fase 2.
+        estara disponível na Fase 2.
       </p>
-      <p class="mt-6 text-xs text-gray-400">Disponivel na Fase 2 do roadmap</p>
+      <p class="mt-6 text-xs text-gray-400">Disponível na Fase 2 do roadmap</p>
     </div>
   </div>
 </template>

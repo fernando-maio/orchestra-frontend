@@ -456,7 +456,7 @@ onMounted(() => {
               </svg>
             </div>
             <div class="min-w-0">
-              <p class="text-xs text-gray-500 font-medium">Localizacao</p>
+              <p class="text-xs text-gray-500 font-medium">Localização</p>
               <p class="text-sm font-semibold text-gray-900 truncate">
                 {{ vendor.city ? `${vendor.city}, ${vendor.state}` : vendor.state || '-' }}
               </p>
@@ -473,7 +473,7 @@ onMounted(() => {
               </svg>
             </div>
             <div>
-              <p class="text-xs text-gray-500 font-medium">Avaliacao</p>
+              <p class="text-xs text-gray-500 font-medium">Avaliação</p>
               <div class="flex items-center gap-1.5">
                 <div class="flex items-center">
                   <!-- Full stars -->
@@ -513,7 +513,7 @@ onMounted(() => {
                   </svg>
                 </div>
                 <span class="text-sm font-semibold text-gray-900">{{ vendor.average_rating?.toFixed(1) || '0.0' }}</span>
-                <span class="text-xs text-gray-500">({{ vendor.total_ratings }} avaliacoes)</span>
+                <span class="text-xs text-gray-500">({{ vendor.total_ratings }} avaliações)</span>
               </div>
             </div>
           </div>
@@ -557,12 +557,12 @@ onMounted(() => {
                 <dd class="mt-1 text-sm text-gray-900">{{ vendor.service_radius_km ? `${vendor.service_radius_km} km` : '-' }}</dd>
               </div>
               <div class="sm:col-span-2">
-                <dt class="text-sm font-medium text-gray-500">Endereco Completo</dt>
+                <dt class="text-sm font-medium text-gray-500">Endereço Completo</dt>
                 <dd class="mt-1 text-sm text-gray-900">{{ locationString }}</dd>
               </div>
               <div class="sm:col-span-2">
-                <dt class="text-sm font-medium text-gray-500">Descricao</dt>
-                <dd class="mt-1 text-sm text-gray-900 whitespace-pre-line">{{ vendor.description || 'Nenhuma descricao informada.' }}</dd>
+                <dt class="text-sm font-medium text-gray-500">Descrição</dt>
+                <dd class="mt-1 text-sm text-gray-900 whitespace-pre-line">{{ vendor.description || 'Nenhuma descrição informada.' }}</dd>
               </div>
             </dl>
 
@@ -681,7 +681,7 @@ onMounted(() => {
               {{
                 (compliance as Record<string, unknown>).status === 'compliant' ? 'Em Conformidade' :
                 (compliance as Record<string, unknown>).status === 'partial' ? 'Parcialmente Conforme' :
-                (compliance as Record<string, unknown>).status === 'non_compliant' ? 'Nao Conforme' :
+                (compliance as Record<string, unknown>).status === 'non_compliant' ? 'Não Conforme' :
                 (compliance as Record<string, unknown>).status
               }}
             </span>
@@ -735,7 +735,7 @@ onMounted(() => {
             >
               <p class="text-xs text-gray-500 font-medium uppercase">{{ String(key).replaceAll('_', ' ') }}</p>
               <p class="mt-1 text-sm font-semibold text-gray-900">
-                {{ typeof value === 'boolean' ? (value ? 'Sim' : 'Nao') : value ?? '-' }}
+                {{ typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : value ?? '-' }}
               </p>
             </div>
           </div>

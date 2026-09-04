@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CategoryIcon from '@/components/ui/CategoryIcon.vue'
 import { ref, onMounted } from 'vue'
 import api from '@/services/api'
 import { useToast } from 'vue-toastification'
@@ -68,10 +69,10 @@ const toggleActive = async (category: Category) => {
         <div class="flex items-start justify-between">
           <div class="flex items-center space-x-3">
             <div
-              class="w-10 h-10 rounded-lg flex items-center justify-center text-xl"
+              class="w-10 h-10 rounded-lg flex items-center justify-center text-white shrink-0"
               :style="{ backgroundColor: category.color || '#6366f1' }"
             >
-              {{ category.icon || '📦' }}
+              <CategoryIcon :name="category.icon" />
             </div>
             <div>
               <h3 class="font-medium text-gray-900">{{ category.name }}</h3>

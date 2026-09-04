@@ -47,7 +47,7 @@ const registerAnother = () => {
         <!-- Description -->
         <p class="text-gray-600 mb-8">
           Seu cadastro foi recebido e esta em analise pela nossa equipe.
-          Voce recebera um e-mail em breve com o resultado.
+          Você recebera um e-mail em breve com o resultado.
         </p>
 
         <!-- Steps -->
@@ -60,7 +60,7 @@ const registerAnother = () => {
             </li>
             <li class="flex items-start gap-3">
               <span class="flex-shrink-0 w-6 h-6 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-sm font-medium">2</span>
-              <span class="text-gray-600">Voce recebera um e-mail com o resultado da analise</span>
+              <span class="text-gray-600">Você recebera um e-mail com o resultado da analise</span>
             </li>
             <li class="flex items-start gap-3">
               <span class="flex-shrink-0 w-6 h-6 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-sm font-medium">3</span>

@@ -113,11 +113,11 @@ const validateStep = (step: number): boolean => {
   Object.keys(errors).forEach(key => delete errors[key])
 
   if (step === 1) {
-    if (!form.trade_name.trim()) errors.trade_name = 'Nome fantasia e obrigatorio'
-    if (!form.cnpj.trim()) errors.cnpj = 'CNPJ e obrigatorio'
-    if (!form.email.trim()) errors.email = 'E-mail e obrigatorio'
+    if (!form.trade_name.trim()) errors.trade_name = 'Nome fantasia e obrigatório'
+    if (!form.cnpj.trim()) errors.cnpj = 'CNPJ e obrigatório'
+    if (!form.email.trim()) errors.email = 'E-mail e obrigatório'
     if (!form.city.trim()) errors.city = 'Cidade e obrigatoria'
-    if (!form.state) errors.state = 'Estado e obrigatorio'
+    if (!form.state) errors.state = 'Estado e obrigatório'
   }
 
   if (step === 2) {
@@ -125,9 +125,9 @@ const validateStep = (step: number): boolean => {
   }
 
   if (step === 3) {
-    if (!form.contact_name.trim()) errors.contact_name = 'Nome do contato e obrigatorio'
-    if (!form.contact_email.trim()) errors.contact_email = 'E-mail do contato e obrigatorio'
-    if (!form.contact_phone.trim()) errors.contact_phone = 'Telefone do contato e obrigatorio'
+    if (!form.contact_name.trim()) errors.contact_name = 'Nome do contato e obrigatório'
+    if (!form.contact_email.trim()) errors.contact_email = 'E-mail do contato e obrigatório'
+    if (!form.contact_phone.trim()) errors.contact_phone = 'Telefone do contato e obrigatório'
   }
 
   return Object.keys(errors).length === 0
@@ -250,7 +250,7 @@ onMounted(() => {
               <input
                 v-model="form.trade_name"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.trade_name }"
                 placeholder="Nome da sua empresa"
               />
@@ -262,7 +262,7 @@ onMounted(() => {
               <input
                 v-model="form.legal_name"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 placeholder="Razao social (opcional)"
               />
             </div>
@@ -275,7 +275,7 @@ onMounted(() => {
                 :value="form.cnpj"
                 @input="handleCnpjInput"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.cnpj }"
                 placeholder="00.000.000/0000-00"
                 maxlength="18"
@@ -290,7 +290,7 @@ onMounted(() => {
               <input
                 v-model="form.email"
                 type="email"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.email }"
                 placeholder="empresa@exemplo.com"
               />
@@ -303,7 +303,7 @@ onMounted(() => {
                 :value="form.phone"
                 @input="handlePhoneInput('phone', $event)"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 placeholder="(00) 0000-0000"
                 maxlength="15"
               />
@@ -315,7 +315,7 @@ onMounted(() => {
                 :value="form.whatsapp"
                 @input="handlePhoneInput('whatsapp', $event)"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 placeholder="(00) 00000-0000"
                 maxlength="15"
               />
@@ -326,17 +326,17 @@ onMounted(() => {
               <input
                 v-model="form.website"
                 type="url"
-                class="form-input w-full"
+                class="input w-full"
                 placeholder="https://www.suaempresa.com.br"
               />
             </div>
 
             <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Endereco</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Endereço</label>
               <input
                 v-model="form.address"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 placeholder="Rua, numero, bairro"
               />
             </div>
@@ -348,7 +348,7 @@ onMounted(() => {
               <input
                 v-model="form.city"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.city }"
                 placeholder="Cidade"
               />
@@ -361,7 +361,7 @@ onMounted(() => {
               </label>
               <select
                 v-model="form.state"
-                class="form-select w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.state }"
               >
                 <option value="">Selecione</option>
@@ -375,7 +375,7 @@ onMounted(() => {
               <input
                 v-model="form.zip_code"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 placeholder="00000-000"
                 maxlength="9"
               />
@@ -386,19 +386,19 @@ onMounted(() => {
               <input
                 v-model.number="form.service_radius_km"
                 type="number"
-                class="form-input w-full"
+                class="input w-full"
                 min="1"
                 max="500"
               />
             </div>
 
             <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Descricao da Empresa</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Descrição da Empresa</label>
               <textarea
                 v-model="form.description"
                 rows="3"
-                class="form-input w-full"
-                placeholder="Descreva sua empresa, servicos oferecidos, diferenciais..."
+                class="input w-full"
+                placeholder="Descreva sua empresa, serviços oferecidos, diferenciais..."
               ></textarea>
             </div>
           </div>
@@ -406,7 +406,7 @@ onMounted(() => {
 
         <!-- Step 2: Categories -->
         <div v-show="currentStep === 2">
-          <h2 class="text-lg font-semibold text-gray-900 mb-2">Categorias de Servico</h2>
+          <h2 class="text-lg font-semibold text-gray-900 mb-2">Categorias de Serviço</h2>
           <p class="text-gray-500 text-sm mb-6">Selecione as categorias em que sua empresa atua.</p>
 
           <div v-if="errors.category_ids" class="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
@@ -455,19 +455,19 @@ onMounted(() => {
             <h4 class="font-medium text-gray-700 mb-2">Caracteristicas (opcional)</h4>
             <div class="space-y-2">
               <label class="flex items-center gap-3 cursor-pointer">
-                <input v-model="form.accepts_urgent" type="checkbox" class="form-checkbox" />
+                <input v-model="form.accepts_urgent" type="checkbox" class="checkbox" />
                 <span class="text-gray-600">Aceito trabalhos urgentes</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
-                <input v-model="form.is_local_business" type="checkbox" class="form-checkbox" />
+                <input v-model="form.is_local_business" type="checkbox" class="checkbox" />
                 <span class="text-gray-600">Negocio local / de bairro</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
-                <input v-model="form.is_sustainable" type="checkbox" class="form-checkbox" />
+                <input v-model="form.is_sustainable" type="checkbox" class="checkbox" />
                 <span class="text-gray-600">Praticas sustentaveis / ESG</span>
               </label>
               <label class="flex items-center gap-3 cursor-pointer">
-                <input v-model="form.is_minority_owned" type="checkbox" class="form-checkbox" />
+                <input v-model="form.is_minority_owned" type="checkbox" class="checkbox" />
                 <span class="text-gray-600">Empresa de minoria / diversidade</span>
               </label>
             </div>
@@ -487,7 +487,7 @@ onMounted(() => {
               <input
                 v-model="form.contact_name"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.contact_name }"
                 placeholder="Nome do responsavel"
               />
@@ -501,7 +501,7 @@ onMounted(() => {
               <input
                 v-model="form.contact_email"
                 type="email"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.contact_email }"
                 placeholder="contato@exemplo.com"
               />
@@ -516,7 +516,7 @@ onMounted(() => {
                 :value="form.contact_phone"
                 @input="handlePhoneInput('contact_phone', $event)"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.contact_phone }"
                 placeholder="(00) 00000-0000"
                 maxlength="15"
@@ -550,8 +550,8 @@ onMounted(() => {
 
           <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
             <p class="text-sm text-yellow-800">
-              Ao enviar o cadastro, voce concorda que suas informacoes serao analisadas pela equipe Orchestra.
-              Voce recebera um e-mail com o resultado da analise.
+              Ao enviar o cadastro, você concorda que suas informações serao analisadas pela equipe Orchestra.
+              Você recebera um e-mail com o resultado da analise.
             </p>
           </div>
         </div>
@@ -574,7 +574,7 @@ onMounted(() => {
             @click="nextStep"
             class="btn btn-primary"
           >
-            Proximo
+            Próximo
           </button>
           <button
             v-else

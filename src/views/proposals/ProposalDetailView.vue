@@ -17,10 +17,10 @@
       </div>
       <h2 class="text-xl font-semibold text-gray-900 mb-2">Detalhes da Proposta</h2>
       <p class="text-gray-500 max-w-md mx-auto">
-        A visualizacao detalhada de propostas com itens, valores, condicoes e acoes
-        estara disponivel na Fase 2.
+        A visualizacao detalhada de propostas com itens, valores, condicoes e ações
+        estara disponível na Fase 2.
       </p>
-      <p class="mt-6 text-xs text-gray-400">Disponivel na Fase 2 do roadmap</p>
+      <p class="mt-6 text-xs text-gray-400">Disponível na Fase 2 do roadmap</p>
     </div>
   </div>
 </template>

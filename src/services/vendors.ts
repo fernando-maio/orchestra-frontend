@@ -43,6 +43,7 @@ export interface VendorFormData {
   contact_email?: string
   contact_phone?: string
   category_ids?: string[]
+  subscription_tier?: Vendor['subscription_tier']
 }
 
 export interface PaginatedVendors {
@@ -87,6 +88,16 @@ const vendorsService = {
   async toggleActive(id: string): Promise<Vendor> {
     const response = await api.post(`/vendors/${id}/toggle-active`)
     return response.data.data
+  },
+
+  async updateSubscriptionTier(
+    id: string,
+    tier: Vendor['subscription_tier'],
+  ): Promise<Vendor> {
+    const { data } = await api.post(`/vendors/${id}/subscription-tier`, {
+      subscription_tier: tier,
+    })
+    return data.data
   },
 
   async verify(id: string): Promise<Vendor> {

@@ -169,7 +169,7 @@ onMounted(async () => {
     <div class="mb-6">
       <h1 class="text-2xl font-bold text-gray-900">{{ pageTitle }}</h1>
       <p class="text-gray-500">
-        {{ isEditMode ? 'Altere as informacoes do evento' : 'Preencha as informacoes para criar um novo evento' }}
+        {{ isEditMode ? 'Altere as informações do evento' : 'Preencha as informações para criar um novo evento' }}
       </p>
     </div>
 
@@ -183,7 +183,7 @@ onMounted(async () => {
       <!-- Basic Info -->
       <div class="card mb-6">
         <div class="card-header">
-          <h2 class="text-lg font-semibold text-gray-900">Informacoes Basicas</h2>
+          <h2 class="text-lg font-semibold text-gray-900">Informações Básicas</h2>
         </div>
         <div class="card-body">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -205,7 +205,7 @@ onMounted(async () => {
 
             <!-- Description -->
             <div class="md:col-span-2">
-              <label for="description" class="label">Descricao</label>
+              <label for="description" class="label">Descrição</label>
               <textarea
                 id="description"
                 v-model="form.description"
@@ -219,7 +219,7 @@ onMounted(async () => {
             <!-- Start Date -->
             <div>
               <label for="start_date" class="label">
-                Data de Inicio <span class="text-red-500">*</span>
+                Data de Início <span class="text-red-500">*</span>
               </label>
               <input
                 id="start_date"
@@ -233,7 +233,7 @@ onMounted(async () => {
 
             <!-- End Date -->
             <div>
-              <label for="end_date" class="label">Data de Termino</label>
+              <label for="end_date" class="label">Data de Término</label>
               <input
                 id="end_date"
                 v-model="form.end_date"
@@ -246,7 +246,7 @@ onMounted(async () => {
 
             <!-- Estimated Budget -->
             <div>
-              <label for="estimated_budget" class="label">Orcamento Estimado (R$)</label>
+              <label for="estimated_budget" class="label">Orçamento Estimado (R$)</label>
               <input
                 id="estimated_budget"
                 v-model.number="form.estimated_budget"
@@ -291,7 +291,7 @@ onMounted(async () => {
                 v-model="form.venue_name"
                 type="text"
                 :class="['input', getFieldError('venue_name') ? 'input-error' : '']"
-                placeholder="Ex: Centro de Convencoes"
+                placeholder="Ex: Centro de Convenções"
               />
               <p v-if="getFieldError('venue_name')" class="mt-1 text-sm text-red-600">{{ getFieldError('venue_name') }}</p>
             </div>
@@ -299,7 +299,7 @@ onMounted(async () => {
             <!-- Address -->
             <div class="md:col-span-2">
               <label for="address" class="label">
-                Endereco <span class="text-red-500">*</span>
+                Endereço <span class="text-red-500">*</span>
               </label>
               <input
                 id="address"
@@ -367,7 +367,7 @@ onMounted(async () => {
       <div v-if="categories.length > 0" class="card mb-6">
         <div class="card-header">
           <h2 class="text-lg font-semibold text-gray-900">Categorias Necessarias</h2>
-          <p class="text-sm text-gray-500 mt-1">Selecione as categorias de servico que o evento vai precisar.</p>
+          <p class="text-sm text-gray-500 mt-1">Selecione as categorias de serviço que o evento vai precisar.</p>
         </div>
         <div class="card-body">
           <p v-if="getFieldError('required_categories')" class="mb-4 text-sm text-red-600">{{ getFieldError('required_categories') }}</p>

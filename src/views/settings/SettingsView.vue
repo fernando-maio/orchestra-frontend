@@ -75,15 +75,15 @@ const changePassword = async () => {
 <template>
   <div class="space-y-6">
     <div>
-      <h1 class="text-2xl font-bold text-gray-900">Configuracoes</h1>
-      <p class="mt-1 text-sm text-gray-500">Gerencie seu perfil e preferencias</p>
+      <h1 class="text-2xl font-bold text-gray-900">Configurações</h1>
+      <p class="mt-1 text-sm text-gray-500">Gerencie seu perfil e preferências</p>
     </div>
 
     <!-- Profile Section -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200">
       <div class="px-6 py-4 border-b border-gray-200">
         <h2 class="text-lg font-semibold text-gray-900">Perfil</h2>
-        <p class="text-sm text-gray-500">Atualize suas informacoes pessoais</p>
+        <p class="text-sm text-gray-500">Atualize suas informações pessoais</p>
       </div>
       <form class="p-6 space-y-4" @submit.prevent="saveProfile">
         <div v-if="success" class="p-3 bg-green-50 text-green-700 text-sm rounded-lg">
@@ -106,17 +106,21 @@ const changePassword = async () => {
           <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
           <input
             id="email"
-            v-model="profileForm.email"
+            :value="profileForm.email"
             type="email"
-            required
-            class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            readonly
+            disabled
+            class="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
           />
+          <p class="mt-1 text-xs text-gray-500">
+            O e-mail é usado para login e não pode ser alterado por aqui.
+          </p>
           <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email[0] }}</p>
         </div>
 
         <div v-if="authStore.user?.organization" class="p-3 bg-gray-50 rounded-lg">
           <p class="text-sm text-gray-500">
-            <span class="font-medium text-gray-700">Organizacao:</span>
+            <span class="font-medium text-gray-700">Organização:</span>
             {{ authStore.user.organization.name }}
           </p>
           <p class="text-sm text-gray-500 mt-1">

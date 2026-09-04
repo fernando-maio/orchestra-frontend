@@ -206,6 +206,39 @@ const getApprovalStatusBadge = (status: string) => {
   return badges[status] || { class: 'bg-gray-100 text-gray-800', label: status }
 }
 
+const TIERS = [
+  { value: 'free', label: 'Free' },
+  { value: 'featured', label: 'Destaque' },
+  { value: 'premium', label: 'Premium' },
+] as const
+
+// Guarda o id do fornecedor em gravacao, para desabilitar so o seletor dele.
+const tierSaving = ref<string | null>(null)
+
+const changeTier = async (vendor: Vendor, tier: Vendor['subscription_tier']) => {
+  if (tier === vendor.subscription_tier) return
+
+  const anterior = vendor.subscription_tier
+  tierSaving.value = vendor.id
+  try {
+    const updated = await vendorsService.updateSubscriptionTier(vendor.id, tier)
+    const index = vendors.value.findIndex(v => v.id === vendor.id)
+    if (index !== -1) {
+      vendors.value[index] = updated
+    }
+    toast.success(`Plano alterado para ${TIERS.find(t => t.value === tier)?.label}`)
+  } catch (error: unknown) {
+    // Devolve o valor anterior para o seletor nao ficar mostrando um plano
+    // que o servidor recusou.
+    vendor.subscription_tier = anterior
+    const err = error as { response?: { data?: { message?: string } } }
+    toast.error(err.response?.data?.message || 'Erro ao alterar o plano')
+    console.error(error)
+  } finally {
+    tierSaving.value = null
+  }
+}
+
 const getSubscriptionBadge = (tier: string) => {
   const badges: Record<string, { class: string; label: string }> = {
     free: { class: 'bg-gray-100 text-gray-600', label: 'Free' },
@@ -261,14 +294,14 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
               @input="handleSearch"
               type="text"
               placeholder="Nome, CNPJ, email..."
-              class="form-input w-full"
+              class="input w-full"
             />
           </div>
 
           <!-- Category -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
-            <select v-model="filters.category_id" class="form-select w-full">
+            <select v-model="filters.category_id" class="input w-full">
               <option value="">Todas</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
                 {{ cat.name }}
@@ -279,7 +312,7 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
           <!-- Approval Status -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select v-model="filters.approval_status" class="form-select w-full">
+            <select v-model="filters.approval_status" class="input w-full">
               <option value="">Todos</option>
               <option value="pending">Pendente</option>
               <option value="approved">Aprovado</option>
@@ -324,10 +357,10 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
               Categorias
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Localizacao
+              Localização
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Avaliacao
+              Avaliação
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
@@ -336,7 +369,7 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
               Plano
             </th>
             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Acoes
+              Ações
             </th>
           </tr>
         </thead>
@@ -417,12 +450,18 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
 
             <!-- Subscription -->
             <td class="px-6 py-4 whitespace-nowrap">
-              <span
+              <select
+                :value="vendor.subscription_tier"
+                :disabled="tierSaving === vendor.id"
                 :class="getSubscriptionBadge(vendor.subscription_tier).class"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                class="text-xs font-semibold rounded-full border-0 py-1 pl-2 pr-7 cursor-pointer focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-wait"
+                :aria-label="`Plano de ${vendor.trade_name}`"
+                @change="changeTier(vendor, ($event.target as HTMLSelectElement).value as Vendor['subscription_tier'])"
               >
-                {{ getSubscriptionBadge(vendor.subscription_tier).label }}
-              </span>
+                <option v-for="t in TIERS" :key="t.value" :value="t.value">
+                  {{ t.label }}
+                </option>
+              </select>
             </td>
 
             <!-- Actions -->
@@ -555,7 +594,7 @@ watch([() => filters.value.category_id, () => filters.value.approval_status], ()
           <textarea
             v-model="rejectReason"
             rows="4"
-            class="form-input w-full"
+            class="input w-full"
             placeholder="Motivo da rejeicao..."
           ></textarea>
           <div class="mt-4 flex justify-end gap-3">

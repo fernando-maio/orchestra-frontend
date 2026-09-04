@@ -213,14 +213,14 @@ watch(() => filters.value.status, () => {
               @input="handleSearch"
               type="text"
               placeholder="Nome do evento, local..."
-              class="form-input w-full"
+              class="input w-full"
             />
           </div>
 
           <!-- Status -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select v-model="filters.status" class="form-select w-full">
+            <select v-model="filters.status" class="input w-full">
               <option value="">Todos</option>
               <option value="draft">Rascunho</option>
               <option value="active">Ativo</option>

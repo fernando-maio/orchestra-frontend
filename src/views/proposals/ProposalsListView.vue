@@ -35,11 +35,11 @@
           </li>
           <li class="flex items-center gap-2">
             <span class="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
-            Historico de negociacao
+            Histórico de negociacao
           </li>
         </ul>
       </div>
-      <p class="mt-6 text-xs text-gray-400">Disponivel na Fase 2 do roadmap</p>
+      <p class="mt-6 text-xs text-gray-400">Disponível na Fase 2 do roadmap</p>
     </div>
   </div>
 </template>

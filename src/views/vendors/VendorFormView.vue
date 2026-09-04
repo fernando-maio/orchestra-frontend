@@ -33,6 +33,7 @@ const form = reactive<VendorFormData>({
   zip_code: '',
   service_radius_km: 50,
   category_ids: [],
+  subscription_tier: 'free',
 })
 
 // Validation errors
@@ -116,13 +117,13 @@ const validate = (): boolean => {
   // Clear errors
   Object.keys(errors).forEach(key => delete errors[key])
 
-  if (!form.trade_name?.trim()) errors.trade_name = 'Nome fantasia e obrigatorio'
-  if (!form.email?.trim()) errors.email = 'E-mail e obrigatorio'
+  if (!form.trade_name?.trim()) errors.trade_name = 'Nome fantasia e obrigatório'
+  if (!form.email?.trim()) errors.email = 'E-mail e obrigatório'
   if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = 'E-mail invalido'
+    errors.email = 'E-mail inválido'
   }
   if (!form.city?.trim()) errors.city = 'Cidade e obrigatoria'
-  if (!form.state) errors.state = 'Estado e obrigatorio'
+  if (!form.state) errors.state = 'Estado e obrigatório'
 
   return Object.keys(errors).length === 0
 }
@@ -178,7 +179,7 @@ onMounted(async () => {
       <div>
         <h1 class="text-2xl font-bold text-gray-900">{{ pageTitle }}</h1>
         <p class="text-gray-500">
-          {{ isEditMode ? 'Atualize as informacoes do fornecedor' : 'Preencha os dados para cadastrar um novo fornecedor' }}
+          {{ isEditMode ? 'Atualize as informações do fornecedor' : 'Preencha os dados para cadastrar um novo fornecedor' }}
         </p>
       </div>
     </div>
@@ -205,7 +206,7 @@ onMounted(async () => {
                 id="trade_name"
                 v-model="form.trade_name"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.trade_name }"
                 placeholder="Nome da empresa"
               />
@@ -219,7 +220,7 @@ onMounted(async () => {
                 id="legal_name"
                 v-model="form.legal_name"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 placeholder="Razao social (opcional)"
               />
             </div>
@@ -232,7 +233,7 @@ onMounted(async () => {
                 :value="form.cnpj"
                 @input="handleCnpjInput"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.cnpj }"
                 placeholder="00.000.000/0000-00"
                 maxlength="18"
@@ -249,7 +250,7 @@ onMounted(async () => {
                 id="email"
                 v-model="form.email"
                 type="email"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.email }"
                 placeholder="empresa@exemplo.com"
               />
@@ -263,7 +264,7 @@ onMounted(async () => {
                 id="phone"
                 v-model="form.phone"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 placeholder="(00) 0000-0000"
                 maxlength="15"
               />
@@ -276,20 +277,20 @@ onMounted(async () => {
                 id="website"
                 v-model="form.website"
                 type="url"
-                class="form-input w-full"
+                class="input w-full"
                 placeholder="https://www.empresa.com.br"
               />
             </div>
 
             <!-- Description -->
             <div class="md:col-span-2">
-              <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Descricao</label>
+              <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
               <textarea
                 id="description"
                 v-model="form.description"
                 rows="3"
-                class="form-input w-full"
-                placeholder="Descreva a empresa, servicos oferecidos, diferenciais..."
+                class="input w-full"
+                placeholder="Descreva a empresa, serviços oferecidos, diferenciais..."
               ></textarea>
             </div>
           </div>
@@ -299,7 +300,7 @@ onMounted(async () => {
       <!-- Location -->
       <div class="card mb-6">
         <div class="card-body">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Localizacao</h2>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Localização</h2>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- City -->
@@ -311,7 +312,7 @@ onMounted(async () => {
                 id="city"
                 v-model="form.city"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.city }"
                 placeholder="Cidade"
               />
@@ -326,7 +327,7 @@ onMounted(async () => {
               <select
                 id="state"
                 v-model="form.state"
-                class="form-select w-full"
+                class="input w-full"
                 :class="{ 'border-red-500': errors.state }"
               >
                 <option value="">Selecione</option>
@@ -342,7 +343,7 @@ onMounted(async () => {
                 id="zip_code"
                 v-model="form.zip_code"
                 type="text"
-                class="form-input w-full"
+                class="input w-full"
                 placeholder="00000-000"
                 maxlength="9"
               />
@@ -355,7 +356,7 @@ onMounted(async () => {
                 id="service_radius_km"
                 v-model.number="form.service_radius_km"
                 type="number"
-                class="form-input w-full"
+                class="input w-full"
                 min="1"
                 max="500"
                 placeholder="50"
@@ -368,11 +369,31 @@ onMounted(async () => {
       <!-- Categories -->
       <div class="card mb-6">
         <div class="card-body">
-          <h2 class="text-lg font-semibold text-gray-900 mb-2">Categorias de Servico</h2>
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Plano de Patrocínio</h2>
+
+          <div class="max-w-sm">
+            <label for="subscription_tier" class="block text-sm font-medium text-gray-700 mb-1">
+              Plano
+            </label>
+            <select id="subscription_tier" v-model="form.subscription_tier" class="input">
+              <option value="free">Free — listagem básica</option>
+              <option value="featured">Destaque — prioridade nas buscas</option>
+              <option value="premium">Premium — topo das categorias</option>
+            </select>
+            <p class="mt-1 text-xs text-gray-500">
+              Também pode ser alterado direto na listagem de fornecedores.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h2 class="text-lg font-semibold text-gray-900 mb-2">Categorias de Serviço</h2>
           <p class="text-gray-500 text-sm mb-4">Selecione as categorias em que o fornecedor atua.</p>
 
           <div v-if="categories.length === 0" class="text-sm text-gray-500 py-4">
-            Nenhuma categoria disponivel.
+            Nenhuma categoria disponível.
           </div>
 
           <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">

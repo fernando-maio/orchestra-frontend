@@ -19,7 +19,7 @@
           O portal de resposta a propostas por link permitira que fornecedores visualizem
           detalhes da cotacao e enviem suas propostas diretamente.
         </p>
-        <p class="text-xs text-gray-400">Disponivel na Fase 2 do roadmap</p>
+        <p class="text-xs text-gray-400">Disponível na Fase 2 do roadmap</p>
       </div>
     </div>
   </div>
