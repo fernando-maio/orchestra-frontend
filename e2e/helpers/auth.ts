@@ -13,38 +13,50 @@ export const TEST_CREDENTIALS = {
  * The frontend proxies /api requests, but for direct API calls from test
  * helpers we go through the same origin the browser uses.
  */
-const API_BASE = 'http://localhost:8001/api'
+export const API_BASE = 'http://localhost:8001/api'
+
+/**
+ * Onde o projeto `setup` grava a sessao autenticada. Os demais projetos
+ * carregam esse arquivo via `storageState`, de modo que a suite inteira
+ * faz UM unico login.
+ *
+ * Isso existe por causa do rate limit de 5 req/min no /api/login: com um
+ * login por teste a suite estourava o limite e os testes a partir do sexto
+ * recebiam 429 (HTML "Too Many Requests") em vez do JSON esperado.
+ */
+export const STORAGE_STATE = 'e2e/.auth/admin.json'
 
 export interface AuthResponse {
   data: {
     token: string
     user: {
-      id: number
+      id: string
       name: string
       email: string
       roles: string[]
       permissions: string[]
-      organization?: Record<string, unknown>
+      organization?: Record<string, unknown> | null
     }
   }
 }
 
 /**
- * Logs in via the API and injects the auth token + user data into
- * localStorage so the Vue app recognises the session immediately.
+ * Autentica pela API e grava token + usuario no localStorage da pagina.
  *
- * Call this in `beforeEach` for any test that requires an authenticated user.
+ * Usado apenas pelo projeto `setup`. Os testes nao chamam isso: eles herdam
+ * a sessao pronta via `storageState`.
+ *
+ * Escreve com `page.evaluate` e nao com `page.addInitScript` de proposito.
+ * O `addInitScript` roda de novo a cada navegacao, o que tornava impossivel
+ * encerrar a sessao dentro de um teste: qualquer `page.goto` reinjetava o
+ * token logo apos o `clearAuth`.
  */
-export async function loginViaApi(
+export async function seedAuthenticatedSession(
   page: Page,
   credentials: { email: string; password: string } = TEST_CREDENTIALS,
-): Promise<void> {
-  // Hit the login endpoint directly
+): Promise<AuthResponse> {
   const response = await page.request.post(`${API_BASE}/login`, {
-    data: {
-      email: credentials.email,
-      password: credentials.password,
-    },
+    data: credentials,
   })
 
   if (!response.ok()) {
@@ -55,20 +67,23 @@ export async function loginViaApi(
 
   const body: AuthResponse = await response.json()
 
-  // Inject token and user into localStorage before navigating,
-  // so the Vue router guard picks them up immediately.
-  await page.addInitScript(
+  // O localStorage e por origem, entao precisamos de um documento carregado
+  // na origem do app antes de escrever nele.
+  await page.goto('/login')
+  await page.evaluate(
     ({ token, user }: { token: string; user: string }) => {
       window.localStorage.setItem('token', token)
       window.localStorage.setItem('user', user)
     },
     { token: body.data.token, user: JSON.stringify(body.data.user) },
   )
+
+  return body
 }
 
 /**
- * Logs in by filling the login form in the browser.
- * Useful for tests that explicitly verify the login UI flow.
+ * Faz login preenchendo o formulario, exercitando a UI de verdade.
+ * Use apenas no teste que valida o fluxo de login em si.
  */
 export async function loginViaUI(
   page: Page,
@@ -88,8 +103,7 @@ export async function loginViaUI(
 }
 
 /**
- * Clears auth data from localStorage effectively logging out
- * without hitting the API.
+ * Limpa a sessao do localStorage, equivalente a um logout.
  */
 export async function clearAuth(page: Page): Promise<void> {
   await page.evaluate(() => {

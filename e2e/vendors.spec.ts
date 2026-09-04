@@ -1,11 +1,8 @@
 import { test, expect } from '@playwright/test'
-import { loginViaApi } from './helpers/auth'
+import { detailRoute } from './helpers/patterns'
 
+// A sessao vem pronta do projeto `setup` via storageState.
 test.describe('Vendors', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginViaApi(page)
-  })
-
   test('vendors list page loads', async ({ page }) => {
     await page.goto('/vendors')
     await page.waitForLoadState('networkidle')
@@ -58,7 +55,7 @@ test.describe('Vendors', () => {
         await page.waitForLoadState('networkidle')
 
         // The URL should now be /vendors/:id
-        await expect(page).toHaveURL(/\/vendors\/\d+/)
+        await expect(page).toHaveURL(detailRoute('vendors'))
 
         // The detail page should have loaded with content
         const mainContent = page.locator('main')

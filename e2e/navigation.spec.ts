@@ -1,11 +1,7 @@
 import { test, expect } from '@playwright/test'
-import { loginViaApi } from './helpers/auth'
 
+// A sessao vem pronta do projeto `setup` via storageState.
 test.describe('Navigation', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginViaApi(page)
-  })
-
   test('sidebar navigation works between pages', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
@@ -92,10 +88,15 @@ test.describe('Navigation', () => {
 
     // Clicking "Voltar ao inicio" should navigate home
     await page.getByText(/Voltar ao início/i).click()
-    await page.waitForLoadState('networkidle')
+
+    // Espera a URL mudar, e nao 'networkidle': a navegacao e client-side, entao
+    // nao ha trafego de rede para aguardar e o page.url() era lido antes de o
+    // router terminar, ainda apontando para a rota invalida.
+    await page.waitForURL((url) => !url.pathname.includes('this-route-does-not-exist-at-all'), {
+      timeout: 10_000,
+    })
 
     // Should be on a valid page (dashboard or login, depending on auth state)
-    const url = page.url()
-    expect(url.includes('/this-route-does-not-exist-at-all')).toBeFalsy()
+    expect(page.url()).not.toContain('/this-route-does-not-exist-at-all')
   })
 })

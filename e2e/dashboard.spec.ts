@@ -1,11 +1,7 @@
 import { test, expect } from '@playwright/test'
-import { loginViaApi } from './helpers/auth'
 
+// A sessao vem pronta do projeto `setup` via storageState.
 test.describe('Dashboard', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginViaApi(page)
-  })
-
   test('dashboard loads and shows stats cards', async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('networkidle')
