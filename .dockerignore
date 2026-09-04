@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+.gitignore
+e2e
+test-results
+playwright-report
+coverage
+*.md
+.env
+.env.*
