@@ -148,4 +148,38 @@ describe('Vendors Service', () => {
       expect(result[0]!.name).toBe('Buffet')
     })
   })
+
+  describe('updateSubscriptionTier', () => {
+    it('envia o plano para o endpoint dedicado', async () => {
+      vi.mocked(api.post).mockResolvedValueOnce({
+        data: { data: { ...mockVendor, subscription_tier: 'premium' } },
+      })
+
+      const resultado = await vendorsService.updateSubscriptionTier('v-1', 'premium')
+
+      expect(api.post).toHaveBeenCalledWith('/vendors/v-1/subscription-tier', {
+        subscription_tier: 'premium',
+      })
+      expect(resultado.subscription_tier).toBe('premium')
+    })
+
+    it.each(['free', 'featured', 'premium'] as const)('aceita o plano %s', async (tier) => {
+      vi.mocked(api.post).mockResolvedValueOnce({
+        data: { data: { ...mockVendor, subscription_tier: tier } },
+      })
+
+      const resultado = await vendorsService.updateSubscriptionTier('v-1', tier)
+
+      expect(resultado.subscription_tier).toBe(tier)
+    })
+
+    it('propaga o erro quando o servidor recusa, para a tela reverter', async () => {
+      // A listagem faz rollback visual do seletor com base nesse erro.
+      vi.mocked(api.post).mockRejectedValueOnce(new Error('403'))
+
+      await expect(
+        vendorsService.updateSubscriptionTier('v-1', 'premium'),
+      ).rejects.toThrow()
+    })
+  })
 })

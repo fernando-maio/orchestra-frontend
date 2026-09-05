@@ -1,4 +1,5 @@
 import { createPinia, setActivePinia } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
 import { createRouter, createWebHistory } from 'vue-router'
 import type { Component } from 'vue'
 import { mount } from '@vue/test-utils'
@@ -38,6 +39,30 @@ export function mountWithPlugins(component: Component, options: Record<string, u
     },
     ...options,
   })
+}
+
+/**
+ * Monta uma store de auth ja autenticada, com as permissoes informadas.
+ *
+ * Serve para testar componentes que escondem acoes por permissao: o teste
+ * declara exatamente o que o perfil pode, sem depender de chamada de API.
+ */
+export function setupAuthWithPermissions(
+  permissions: string[],
+  overrides: Partial<{ roles: string[]; name: string; email: string }> = {},
+) {
+  const pinia = setupTestPinia()
+  const store = useAuthStore()
+
+  store.user = {
+    ...mockUser,
+    ...overrides,
+    roles: overrides.roles ?? ['admin'],
+    permissions,
+  } as never
+  store.token = 'token-de-teste'
+
+  return { pinia, store }
 }
 
 export const mockUser = {
