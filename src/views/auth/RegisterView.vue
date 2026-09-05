@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getApiErrorMessage, getValidationErrors } from '@/types/api-error'
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
@@ -27,13 +28,12 @@ const handleSubmit = async () => {
     await authStore.register(form)
     toast.success('Conta criada com sucesso!')
     router.push('/')
-  } catch (error: any) {
-    if (error.response?.data?.errors) {
-      errors.value = error.response.data.errors
-    } else if (error.response?.data?.message) {
-      toast.error(error.response.data.message)
+  } catch (error: unknown) {
+    const validacao = getValidationErrors(error)
+    if (validacao) {
+      errors.value = validacao
     } else {
-      toast.error('Erro ao criar conta. Tente novamente.')
+      toast.error(getApiErrorMessage(error, 'Erro ao criar conta. Tente novamente.'))
     }
   } finally {
     loading.value = false

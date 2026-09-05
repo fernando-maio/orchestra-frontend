@@ -38,7 +38,7 @@ test.describe('Events', () => {
 
     // Essential form fields should be present
     // Name field
-    const nameInput = page.locator('input[name="name"], #name, input[placeholder*="nome" i]')
+    const _nameInput = page.locator('input[name="name"], #name, input[placeholder*="nome" i]')
     // We also check that the form simply has text inputs
     const formInputs = page.locator('form input, form select, form textarea')
     const inputCount = await formInputs.count()
@@ -117,7 +117,7 @@ test.describe('Events', () => {
     await expect(statusSelect.first()).toBeVisible()
 
     // Get the initial total count text
-    const initialCountText = await page.getByText(/evento\(s\) encontrado\(s\)/).textContent()
+    const _initialCountText = await page.getByText(/evento\(s\) encontrado\(s\)/).textContent()
 
     // Select a specific status filter (e.g. "Ativo" = active)
     await statusSelect.first().selectOption('active')

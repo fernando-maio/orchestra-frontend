@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getApiErrorMessage, getValidationErrors } from '@/types/api-error'
 import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useToast } from 'vue-toastification'
@@ -27,13 +28,12 @@ const handleSubmit = async () => {
     toast.success('Login realizado com sucesso!')
     const redirect = route.query.redirect as string || '/'
     router.push(redirect)
-  } catch (error: any) {
-    if (error.response?.data?.errors) {
-      errors.value = error.response.data.errors
-    } else if (error.response?.data?.message) {
-      toast.error(error.response.data.message)
+  } catch (error: unknown) {
+    const validacao = getValidationErrors(error)
+    if (validacao) {
+      errors.value = validacao
     } else {
-      toast.error('Erro ao fazer login. Tente novamente.')
+      toast.error(getApiErrorMessage(error, 'Erro ao fazer login. Tente novamente.'))
     }
   } finally {
     loading.value = false

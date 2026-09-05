@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getValidationErrors } from '@/types/api-error'
 import { ref, reactive, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import api from '@/services/api'
@@ -41,9 +42,10 @@ const saveProfile = async () => {
     await authStore.fetchUser()
     success.value = true
     setTimeout(() => { success.value = false }, 3000)
-  } catch (error: any) {
-    if (error.response?.data?.errors) {
-      errors.value = error.response.data.errors
+  } catch (error: unknown) {
+    const validacao = getValidationErrors(error)
+    if (validacao) {
+      errors.value = validacao
     }
   } finally {
     saving.value = false
@@ -62,9 +64,10 @@ const changePassword = async () => {
     passwordForm.password = ''
     passwordForm.password_confirmation = ''
     setTimeout(() => { passwordSuccess.value = false }, 3000)
-  } catch (error: any) {
-    if (error.response?.data?.errors) {
-      passwordErrors.value = error.response.data.errors
+  } catch (error: unknown) {
+    const validacao = getValidationErrors(error)
+    if (validacao) {
+      passwordErrors.value = validacao
     }
   } finally {
     passwordSaving.value = false
