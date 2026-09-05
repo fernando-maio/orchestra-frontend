@@ -113,11 +113,11 @@ const validateStep = (step: number): boolean => {
   Object.keys(errors).forEach(key => delete errors[key])
 
   if (step === 1) {
-    if (!form.trade_name.trim()) errors.trade_name = 'Nome fantasia e obrigatório'
-    if (!form.cnpj.trim()) errors.cnpj = 'CNPJ e obrigatório'
-    if (!form.email.trim()) errors.email = 'E-mail e obrigatório'
-    if (!form.city.trim()) errors.city = 'Cidade e obrigatoria'
-    if (!form.state) errors.state = 'Estado e obrigatório'
+    if (!form.trade_name.trim()) errors.trade_name = 'Nome fantasia é obrigatório'
+    if (!form.cnpj.trim()) errors.cnpj = 'CNPJ é obrigatório'
+    if (!form.email.trim()) errors.email = 'E-mail é obrigatório'
+    if (!form.city.trim()) errors.city = 'Cidade é obrigatória'
+    if (!form.state) errors.state = 'Estado é obrigatório'
   }
 
   if (step === 2) {
@@ -125,9 +125,9 @@ const validateStep = (step: number): boolean => {
   }
 
   if (step === 3) {
-    if (!form.contact_name.trim()) errors.contact_name = 'Nome do contato e obrigatório'
-    if (!form.contact_email.trim()) errors.contact_email = 'E-mail do contato e obrigatório'
-    if (!form.contact_phone.trim()) errors.contact_phone = 'Telefone do contato e obrigatório'
+    if (!form.contact_name.trim()) errors.contact_name = 'Nome do contato é obrigatório'
+    if (!form.contact_email.trim()) errors.contact_email = 'E-mail do contato é obrigatório'
+    if (!form.contact_phone.trim()) errors.contact_phone = 'Telefone do contato é obrigatório'
   }
 
   return Object.keys(errors).length === 0
@@ -258,12 +258,12 @@ onMounted(() => {
             </div>
 
             <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Razao Social</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Razão Social</label>
               <input
                 v-model="form.legal_name"
                 type="text"
                 class="input w-full"
-                placeholder="Razao social (opcional)"
+                placeholder="Razão social (opcional)"
               />
             </div>
 

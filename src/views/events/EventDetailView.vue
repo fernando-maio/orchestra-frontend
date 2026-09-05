@@ -147,7 +147,7 @@ const handleDelete = async () => {
   actionLoading.value = true
   try {
     await eventsService.delete(event.value.id)
-    toast.success('Evento excluido com sucesso')
+    toast.success('Evento excluído com sucesso')
     router.push({ name: 'events' })
   } catch (error: unknown) {
     const err = error as { response?: { data?: { message?: string } } }

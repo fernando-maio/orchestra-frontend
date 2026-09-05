@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CategoryIcon from '@/components/ui/CategoryIcon.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
@@ -187,7 +188,7 @@ const deleteVendor = async () => {
   actionLoading.value = true
   try {
     await vendorsService.delete(vendor.value.id)
-    toast.success('Fornecedor excluido com sucesso')
+    toast.success('Fornecedor excluído com sucesso')
     router.push({ name: 'vendors' })
   } catch (err: unknown) {
     const apiErr = err as { response?: { data?: { message?: string } } }
@@ -580,7 +581,7 @@ onMounted(() => {
           <div class="p-6">
             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
               <div>
-                <dt class="text-sm font-medium text-gray-500">Razao Social</dt>
+                <dt class="text-sm font-medium text-gray-500">Razão Social</dt>
                 <dd class="mt-1 text-sm text-gray-900">{{ vendor.legal_name || '-' }}</dd>
               </div>
               <div>
@@ -671,7 +672,9 @@ onMounted(() => {
                 :key="cat.id"
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-gray-100 text-gray-800"
               >
-                <span v-if="cat.icon" class="text-base">{{ cat.icon }}</span>
+                <!-- cat.icon guarda o NOME do ícone (ex.: "bolt"), não o
+                     símbolo. Interpolá-lo direto imprimia "bolt" na tela. -->
+                <CategoryIcon v-if="cat.icon" :name="cat.icon" :size="16" />
                 <span
                   v-else-if="cat.color"
                   class="w-2 h-2 rounded-full shrink-0"

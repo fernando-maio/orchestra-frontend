@@ -64,7 +64,7 @@ const registerAnother = () => {
             </li>
             <li class="flex items-start gap-3">
               <span class="flex-shrink-0 w-6 h-6 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-sm font-medium">3</span>
-              <span class="text-gray-600">Apos aprovacao, sua empresa estara visivel para clientes</span>
+              <span class="text-gray-600">Após aprovacao, sua empresa estara visivel para clientes</span>
             </li>
           </ol>
         </div>

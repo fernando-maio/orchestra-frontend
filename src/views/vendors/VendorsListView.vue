@@ -134,7 +134,7 @@ const deleteVendor = async (vendor: Vendor) => {
   try {
     await vendorsService.delete(vendor.id)
     vendors.value = vendors.value.filter(v => v.id !== vendor.id)
-    toast.success('Fornecedor excluido com sucesso')
+    toast.success('Fornecedor excluído com sucesso')
   } catch (error: unknown) {
     const err = error as { response?: { data?: { message?: string } } }
     toast.error(err.response?.data?.message || 'Erro ao excluir fornecedor')

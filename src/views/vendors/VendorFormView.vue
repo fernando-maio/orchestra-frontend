@@ -117,13 +117,13 @@ const validate = (): boolean => {
   // Clear errors
   Object.keys(errors).forEach(key => delete errors[key])
 
-  if (!form.trade_name?.trim()) errors.trade_name = 'Nome fantasia e obrigatório'
-  if (!form.email?.trim()) errors.email = 'E-mail e obrigatório'
+  if (!form.trade_name?.trim()) errors.trade_name = 'Nome fantasia é obrigatório'
+  if (!form.email?.trim()) errors.email = 'E-mail é obrigatório'
   if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
     errors.email = 'E-mail inválido'
   }
-  if (!form.city?.trim()) errors.city = 'Cidade e obrigatoria'
-  if (!form.state) errors.state = 'Estado e obrigatório'
+  if (!form.city?.trim()) errors.city = 'Cidade é obrigatória'
+  if (!form.state) errors.state = 'Estado é obrigatório'
 
   return Object.keys(errors).length === 0
 }
@@ -215,13 +215,13 @@ onMounted(async () => {
 
             <!-- Legal Name -->
             <div class="md:col-span-2">
-              <label for="legal_name" class="block text-sm font-medium text-gray-700 mb-1">Razao Social</label>
+              <label for="legal_name" class="block text-sm font-medium text-gray-700 mb-1">Razão Social</label>
               <input
                 id="legal_name"
                 v-model="form.legal_name"
                 type="text"
                 class="input w-full"
-                placeholder="Razao social (opcional)"
+                placeholder="Razão social (opcional)"
               />
             </div>
 

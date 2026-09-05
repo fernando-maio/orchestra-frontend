@@ -128,7 +128,7 @@ const deleteEvent = async (event: Event) => {
   try {
     await eventsService.delete(event.id)
     events.value = events.value.filter(e => e.id !== event.id)
-    toast.success('Evento excluido com sucesso')
+    toast.success('Evento excluído com sucesso')
   } catch (error: unknown) {
     const err = error as { response?: { data?: { message?: string } } }
     toast.error(err.response?.data?.message || 'Erro ao excluir evento')
