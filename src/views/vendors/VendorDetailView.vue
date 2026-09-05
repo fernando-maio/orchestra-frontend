@@ -217,6 +217,56 @@ const formatCnpj = (cnpj?: string) => {
   return cnpj
 }
 
+// A API devolve { is_compliant, documents: { chave: {...} }, total_documents }.
+// `documents` e um OBJETO com chave por tipo de documento, e nao um array - o
+// template antes testava Array.isArray e caia num dump generico, imprimindo o
+// JSON cru na tela.
+interface DocumentoCompliance {
+  chave: string
+  label: string
+  rotulo: string
+  uploadedAt: string | null
+  expiryDate: string | null
+  cor: { badge: string; icone: string }
+}
+
+const complianceInfo = computed(() => {
+  const bruto = (compliance.value ?? {}) as Record<string, unknown>
+  const docsBrutos = (bruto.documents ?? {}) as Record<string, Record<string, unknown>>
+
+  const documentos: DocumentoCompliance[] = Object.entries(docsBrutos).map(
+    ([chave, doc]) => {
+      const status = String(doc.status ?? 'missing')
+      const vencido = Boolean(doc.is_expired)
+
+      const { rotulo, cor } = vencido
+        ? { rotulo: 'Vencido', cor: { badge: 'bg-red-100 text-red-800', icone: 'text-red-400' } }
+        : status === 'valid' || status === 'approved'
+          ? { rotulo: 'Válido', cor: { badge: 'bg-green-100 text-green-800', icone: 'text-green-500' } }
+          : status === 'pending'
+            ? { rotulo: 'Em análise', cor: { badge: 'bg-yellow-100 text-yellow-800', icone: 'text-yellow-500' } }
+            : status === 'rejected'
+              ? { rotulo: 'Rejeitado', cor: { badge: 'bg-red-100 text-red-800', icone: 'text-red-400' } }
+              : { rotulo: 'Não enviado', cor: { badge: 'bg-gray-100 text-gray-600', icone: 'text-gray-300' } }
+
+      return {
+        chave,
+        label: String(doc.label ?? chave),
+        rotulo,
+        uploadedAt: (doc.uploaded_at as string | null) ?? null,
+        expiryDate: (doc.expiry_date as string | null) ?? null,
+        cor,
+      }
+    },
+  )
+
+  return {
+    isCompliant: Boolean(bruto.is_compliant),
+    documentos,
+    enviados: documentos.filter(d => d.rotulo !== 'Não enviado').length,
+  }
+})
+
 // Lifecycle
 onMounted(() => {
   loadVendor()
@@ -667,76 +717,44 @@ onMounted(() => {
           <h3 class="text-lg font-semibold text-gray-900">Compliance</h3>
         </div>
         <div class="p-6">
-          <!-- Overall Status -->
-          <div v-if="(compliance as Record<string, unknown>).status" class="mb-4">
+          <!-- Situação geral -->
+          <div class="mb-5 flex items-center gap-3">
             <span
               class="badge"
-              :class="{
-                'bg-green-100 text-green-800': (compliance as Record<string, unknown>).status === 'compliant',
-                'bg-yellow-100 text-yellow-800': (compliance as Record<string, unknown>).status === 'partial',
-                'bg-red-100 text-red-800': (compliance as Record<string, unknown>).status === 'non_compliant',
-                'bg-gray-100 text-gray-800': (compliance as Record<string, unknown>).status !== 'compliant' && (compliance as Record<string, unknown>).status !== 'partial' && (compliance as Record<string, unknown>).status !== 'non_compliant',
-              }"
+              :class="complianceInfo.isCompliant
+                ? 'bg-green-100 text-green-800'
+                : 'bg-yellow-100 text-yellow-800'"
             >
-              {{
-                (compliance as Record<string, unknown>).status === 'compliant' ? 'Em Conformidade' :
-                (compliance as Record<string, unknown>).status === 'partial' ? 'Parcialmente Conforme' :
-                (compliance as Record<string, unknown>).status === 'non_compliant' ? 'Não Conforme' :
-                (compliance as Record<string, unknown>).status
-              }}
+              {{ complianceInfo.isCompliant ? 'Em conformidade' : 'Pendências' }}
+            </span>
+            <span class="text-sm text-gray-500">
+              {{ complianceInfo.enviados }} de {{ complianceInfo.documentos.length }}
+              documento(s) enviado(s)
             </span>
           </div>
 
-          <!-- Documents List -->
-          <div v-if="Array.isArray((compliance as Record<string, unknown>).documents)" class="space-y-3">
+          <!-- Documentos exigidos -->
+          <div class="space-y-3">
             <div
-              v-for="(doc, idx) in ((compliance as Record<string, unknown>).documents as Array<Record<string, unknown>>)"
-              :key="idx"
+              v-for="doc in complianceInfo.documentos"
+              :key="doc.chave"
               class="flex items-center justify-between p-3 rounded-lg border border-gray-200"
             >
               <div class="flex items-center gap-3">
-                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="h-5 w-5 shrink-0" :class="doc.cor.icone" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 <div>
-                  <p class="text-sm font-medium text-gray-900">{{ doc.name || doc.type || 'Documento' }}</p>
-                  <p v-if="doc.expires_at" class="text-xs text-gray-500">
-                    Vence em: {{ formatDate(doc.expires_at as string) }}
+                  <p class="text-sm font-medium text-gray-900">{{ doc.label }}</p>
+                  <p v-if="doc.expiryDate" class="text-xs text-gray-500">
+                    Vence em {{ formatDate(doc.expiryDate) }}
+                  </p>
+                  <p v-else-if="doc.uploadedAt" class="text-xs text-gray-500">
+                    Enviado em {{ formatDate(doc.uploadedAt) }}
                   </p>
                 </div>
               </div>
-              <span
-                class="badge"
-                :class="{
-                  'bg-green-100 text-green-800': doc.status === 'valid' || doc.status === 'approved',
-                  'bg-yellow-100 text-yellow-800': doc.status === 'pending' || doc.status === 'expiring',
-                  'bg-red-100 text-red-800': doc.status === 'expired' || doc.status === 'rejected',
-                  'bg-gray-100 text-gray-800': !['valid', 'approved', 'pending', 'expiring', 'expired', 'rejected'].includes(doc.status as string),
-                }"
-              >
-                {{
-                  doc.status === 'valid' || doc.status === 'approved' ? 'Valido' :
-                  doc.status === 'pending' ? 'Pendente' :
-                  doc.status === 'expiring' ? 'Vencendo' :
-                  doc.status === 'expired' ? 'Vencido' :
-                  doc.status === 'rejected' ? 'Rejeitado' :
-                  doc.status
-                }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Summary when no documents array -->
-          <div v-else class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div
-              v-for="(value, key) in (compliance as Record<string, unknown>)"
-              :key="key"
-              class="p-3 rounded-lg border border-gray-200"
-            >
-              <p class="text-xs text-gray-500 font-medium uppercase">{{ String(key).replaceAll('_', ' ') }}</p>
-              <p class="mt-1 text-sm font-semibold text-gray-900">
-                {{ typeof value === 'boolean' ? (value ? 'Sim' : 'Não') : value ?? '-' }}
-              </p>
+              <span class="badge" :class="doc.cor.badge">{{ doc.rotulo }}</span>
             </div>
           </div>
         </div>

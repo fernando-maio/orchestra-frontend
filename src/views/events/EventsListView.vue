@@ -228,9 +228,12 @@ watch(() => filters.value.status, () => {
     <!-- Filters -->
     <div class="card mb-6">
       <div class="card-body">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Grade de 10 colunas para caber 50/30/20 numa linha so. Sem o
+             filtro de organizacao (nao super-admin) a busca ocupa o espaco
+             dele, em vez de deixar um vao. -->
+        <div class="grid grid-cols-1 md:grid-cols-10 gap-4">
           <!-- Search -->
-          <div class="md:col-span-2">
+          <div :class="auth.isSuperAdmin ? 'md:col-span-5' : 'md:col-span-7'">
             <label class="block text-sm font-medium text-gray-700 mb-1">Buscar</label>
             <input
               v-model="searchQuery"
@@ -242,7 +245,7 @@ watch(() => filters.value.status, () => {
           </div>
 
           <!-- Organização (apenas super-admin) -->
-          <div v-if="auth.isSuperAdmin">
+          <div v-if="auth.isSuperAdmin" class="md:col-span-3">
             <label class="block text-sm font-medium text-gray-700 mb-1">Organização</label>
             <select v-model="filters.organization_id" class="input w-full">
               <option value="">Todas</option>
@@ -253,7 +256,7 @@ watch(() => filters.value.status, () => {
           </div>
 
           <!-- Status -->
-          <div>
+          <div :class="auth.isSuperAdmin ? 'md:col-span-2' : 'md:col-span-3'">
             <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select v-model="filters.status" class="input w-full">
               <option value="">Todos</option>
