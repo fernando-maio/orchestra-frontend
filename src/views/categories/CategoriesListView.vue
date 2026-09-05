@@ -80,7 +80,8 @@ const toggleActive = async (category: Category) => {
             <div>
               <h3 class="font-medium text-gray-900">{{ category.name }}</h3>
               <p class="text-sm text-gray-500">
-                {{ category.vendors_count || 0 }} fornecedores
+                {{ category.vendors_count || 0 }}
+                {{ category.vendors_count === 1 ? 'fornecedor' : 'fornecedores' }}
               </p>
             </div>
           </div>

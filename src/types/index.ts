@@ -31,9 +31,12 @@ export interface Category {
   name: string
   slug: string
   description?: string
+  /** Nome do ícone (ex.: "utensils"), não o símbolo. Renderize com CategoryIcon. */
   icon?: string
   color?: string
   is_active: boolean
+  /** Só vem nas rotas que usam withCount('vendors'). */
+  vendors_count?: number
 }
 
 // Vendor types
