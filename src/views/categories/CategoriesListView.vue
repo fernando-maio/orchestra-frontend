@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/auth'
 import CategoryIcon from '@/components/ui/CategoryIcon.vue'
-import { ref, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import api from '@/services/api'
 import { useToast } from 'vue-toastification'
 
@@ -18,6 +19,8 @@ interface Category {
 const toast = useToast()
 const categories = ref<Category[]>([])
 const loading = ref(true)
+const auth = useAuthStore()
+const podeEditar = computed(() => auth.hasPermission('categories.update'))
 
 onMounted(async () => {
   try {
@@ -81,10 +84,15 @@ const toggleActive = async (category: Category) => {
               </p>
             </div>
           </div>
+          <!-- Só o super-admin tem categories.update. Sem o gate, admin,
+               organizer e viewer viam o botão e levavam 403 ao clicar. -->
           <button
+            :disabled="!podeEditar"
+            :title="podeEditar ? (category.is_active ? 'Desativar' : 'Ativar') : 'Somente a plataforma altera categorias'"
             @click="toggleActive(category)"
             :class="[
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+              'relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+              podeEditar ? 'cursor-pointer' : 'cursor-not-allowed opacity-50',
               category.is_active ? 'bg-primary-600' : 'bg-gray-200',
             ]"
           >
