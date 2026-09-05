@@ -18,10 +18,19 @@ const props = withDefaults(defineProps<Props>(), {
   variant: 'default',
 })
 
+// Percentual REAL, sem limite superior. É o que o usuário precisa ver quando
+// o valor estoura o máximo.
 const percentage = computed(() => {
-  const pct = (props.value / props.max) * 100
-  return Math.min(Math.max(pct, 0), 100)
+  if (props.max <= 0) return 0
+  return Math.max((props.value / props.max) * 100, 0)
 })
+
+// Largura da barra, essa sim limitada — senão a barra vazaria o container.
+const barWidth = computed(() => Math.min(percentage.value, 100))
+
+const isOver = computed(() => percentage.value > 100)
+
+const overAmount = computed(() => Math.max(props.value - props.max, 0))
 
 const heightClass = computed(() => {
   const sizes = {
@@ -42,7 +51,8 @@ const colorClass = computed(() => {
     return colors[props.variant]
   }
 
-  // Auto color based on percentage
+  // Antes esta comparação usava o percentual já limitado a 100, então o ramo
+  // vermelho era inalcançável. Agora usa o valor real.
   if (percentage.value > 100) return 'bg-red-500'
   if (percentage.value > 80) return 'bg-yellow-500'
   return 'bg-indigo-500'
@@ -65,15 +75,26 @@ const formatCurrency = (val: number) => {
         <span v-if="sublabel" class="text-xs text-gray-500 ml-2">{{ sublabel }}</span>
       </div>
       <div class="text-sm text-gray-600">
-        <span v-if="showPercentage" class="font-medium">{{ percentage.toFixed(0) }}%</span>
+        <span
+          v-if="showPercentage"
+          class="font-medium"
+          :class="isOver ? 'text-red-600' : ''"
+        >{{ percentage.toFixed(0) }}%</span>
         <span class="text-xs text-gray-500 ml-1">({{ formatCurrency(value) }} / {{ formatCurrency(max) }})</span>
       </div>
     </div>
     <div :class="['w-full bg-gray-200 rounded-full overflow-hidden', heightClass]">
       <div
         :class="['transition-all duration-500 rounded-full', heightClass, colorClass]"
-        :style="{ width: `${Math.min(percentage, 100)}%` }"
+        :style="{ width: `${barWidth}%` }"
       />
     </div>
+
+    <!-- A barra cheia sozinha não distingue "no limite" de "estourou".
+         Este aviso diz o quanto passou, em dinheiro. -->
+    <p v-if="isOver" class="mt-1 text-xs font-medium text-red-600">
+      Estourou {{ formatCurrency(overAmount) }}
+      ({{ (percentage - 100).toFixed(0) }}% acima do orçamento)
+    </p>
   </div>
 </template>

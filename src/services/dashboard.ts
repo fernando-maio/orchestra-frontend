@@ -101,6 +101,10 @@ export interface BudgetEvent {
   spent: number
   remaining: number
   percentage: number
+  /** Percentual sem limite: passa de 100 quando o orçamento estoura. */
+  percentage_real: number
+  /** Quanto passou do orçamento, em dinheiro. Zero quando não estourou. */
+  over_amount: number
   status: 'ok' | 'warning' | 'over_budget'
 }
 
@@ -111,6 +115,9 @@ export interface BudgetOverview {
     total_spent: number
     savings: number
     percentage: number
+    percentage_real: number
+    over_amount: number
+    over_budget_count: number
   }
 }
 

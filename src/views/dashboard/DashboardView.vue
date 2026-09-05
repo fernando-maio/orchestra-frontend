@@ -116,9 +116,12 @@ const budgetInsight = computed(() => {
   const overBudget = budgetOverview.value.events.filter(e => e.status === 'over_budget')
   const warning = budgetOverview.value.events.filter(e => e.status === 'warning')
   if (overBudget.length > 0) {
+    // Informa o quanto passou, e não só quantos eventos: "3 eventos acima do
+    // orçamento" não diz se o problema é de R$ 50 ou de R$ 50.000.
+    const excedente = overBudget.reduce((total, e) => total + e.over_amount, 0)
     return {
       type: 'danger',
-      message: `${overBudget.length} evento(s) acima do orçamento`,
+      message: `${overBudget.length} evento(s) acima do orçamento — ${formatCurrency(excedente)} excedidos`,
       icon: '⚠️',
     }
   }
@@ -240,8 +243,19 @@ const pendingProposalsCount = computed(() => {
                 <p class="text-lg font-semibold text-indigo-600">{{ formatCurrency(budgetOverview.totals.total_spent) }}</p>
               </div>
               <div>
-                <p class="text-sm text-gray-500">Disponível</p>
-                <p class="text-lg font-semibold text-green-600">{{ formatCurrency(budgetOverview.totals.savings) }}</p>
+                <p class="text-sm text-gray-500">
+                  {{ budgetOverview.totals.over_amount > 0 ? 'Excedido' : 'Disponível' }}
+                </p>
+                <!-- Sem isso o card mostrava "Disponível: R$ 0" quando o
+                     orçamento tinha estourado, escondendo o problema. -->
+                <p
+                  class="text-lg font-semibold"
+                  :class="budgetOverview.totals.over_amount > 0 ? 'text-red-600' : 'text-green-600'"
+                >
+                  {{ formatCurrency(budgetOverview.totals.over_amount > 0
+                      ? budgetOverview.totals.over_amount
+                      : budgetOverview.totals.savings) }}
+                </p>
               </div>
             </div>
           </div>
